@@ -14,27 +14,72 @@ switch($method) {
     case 'GET':
         // 충전소 검색/조회
         $search = isset($_GET['search']) ? $_GET['search'] : '';
-        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+        $charge_type = isset($_GET['charge_type']) ? $_GET['charge_type'] : '';
+        $connector_type = isset($_GET['connector_type']) ? $_GET['connector_type'] : '';
+        $status = isset($_GET['status']) ? $_GET['status'] : '';
+        $offer_cd = isset($_GET['offer_cd']) ? $_GET['offer_cd'] : '';
+        $cs_id = isset($_GET['cs_id']) ? $_GET['cs_id'] : '';
+        $cp_id = isset($_GET['cp_id']) ? $_GET['cp_id'] : '';
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
         $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
 
         try {
-            if($search) {
-                $query = "SELECT * FROM charging_stations 
-                         WHERE (name LIKE ? OR address LIKE ?) 
-                         AND status = 'active' 
-                         ORDER BY name 
-                         LIMIT ? OFFSET ?";
+            // 특정 충전기 조회
+            if($offer_cd && $cs_id && $cp_id) {
+                $query = "SELECT * FROM eg_charging_stations 
+                         WHERE offer_cd = ? AND csId = ? AND cpId = ?";
                 $stmt = $db->prepare($query);
-                $searchTerm = "%{$search}%";
-                $stmt->execute([$searchTerm, $searchTerm, $limit, $offset]);
-            } else {
-                $query = "SELECT * FROM charging_stations 
-                         WHERE status = 'active' 
-                         ORDER BY name 
-                         LIMIT ? OFFSET ?";
-                $stmt = $db->prepare($query);
-                $stmt->execute([$limit, $offset]);
+                $stmt->execute([$offer_cd, $cs_id, $cp_id]);
+                $station = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if($station) {
+                    $response['success'] = true;
+                    $response['station'] = $station;
+                } else {
+                    $response['message'] = '충전기를 찾을 수 없습니다.';
+                }
+                break;
             }
+
+            // 검색 조건 구성
+            $conditions = [];
+            $params = [];
+
+            if($search) {
+                $conditions[] = "(csNm LIKE ? OR addr LIKE ?)";
+                $searchTerm = "%{$search}%";
+                $params[] = $searchTerm;
+                $params[] = $searchTerm;
+            }
+
+            if($charge_type) {
+                $conditions[] = "charegTp = ?";
+                $params[] = $charge_type;
+            }
+
+            if($connector_type) {
+                $conditions[] = "cpTp = ?";
+                $params[] = $connector_type;
+            }
+
+            if($status) {
+                $conditions[] = "cpStat = ?";
+                $params[] = $status;
+            }
+
+            // 기본 쿼리
+            $query = "SELECT * FROM eg_charging_stations";
+
+            if(!empty($conditions)) {
+                $query .= " WHERE " . implode(" AND ", $conditions);
+            }
+
+            $query .= " ORDER BY csNm, cpNm LIMIT ? OFFSET ?";
+            $params[] = $limit;
+            $params[] = $offset;
+
+            $stmt = $db->prepare($query);
+            $stmt->execute($params);
 
             $stations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -43,53 +88,7 @@ switch($method) {
             $response['count'] = count($stations);
 
         } catch(Exception $e) {
-            $response['message'] = '충전소 조회 중 오류가 발생했습니다.';
-        }
-        break;
-
-    case 'POST':
-        // 충전소 추가 (관리자만)
-        if(!isset($_SESSION['user_id'])) {
-            $response['message'] = '로그인이 필요합니다.';
-            break;
-        }
-
-        $input = json_decode(file_get_contents('php://input'), true);
-
-        if(!$input) {
-            $response['message'] = '잘못된 요청 데이터입니다.';
-            break;
-        }
-
-        $name = $input['name'] ?? '';
-        $address = $input['address'] ?? '';
-        $latitude = $input['latitude'] ?? null;
-        $longitude = $input['longitude'] ?? null;
-        $price = $input['price'] ?? 0;
-        $connector_type = $input['connector_type'] ?? '';
-        $charging_speed = $input['charging_speed'] ?? '';
-
-        if(empty($name) || empty($address)) {
-            $response['message'] = '필수 정보가 누락되었습니다.';
-            break;
-        }
-
-        try {
-            $query = "INSERT INTO charging_stations 
-                     (name, address, latitude, longitude, price, connector_type, charging_speed) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $db->prepare($query);
-
-            if($stmt->execute([$name, $address, $latitude, $longitude, $price, $connector_type, $charging_speed])) {
-                $response['success'] = true;
-                $response['message'] = '충전소가 추가되었습니다.';
-                $response['station_id'] = $db->lastInsertId();
-            } else {
-                $response['message'] = '충전소 추가에 실패했습니다.';
-            }
-
-        } catch(Exception $e) {
-            $response['message'] = '충전소 추가 중 오류가 발생했습니다.';
+            $response['message'] = '충전소 조회 중 오류가 발생했습니다: ' . $e->getMessage();
         }
         break;
 

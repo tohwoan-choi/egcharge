@@ -13,15 +13,16 @@ $database = new Database();
 $db = $database->getConnection();
 
 // 통계 데이터 가져오기
-$total_stations = $db->query("SELECT COUNT(*) FROM charging_stations")->fetchColumn();
+$total_stations = $db->query("SELECT COUNT(DISTINCT CONCAT(offer_cd, csId)) FROM eg_charging_stations")->fetchColumn();
 $user_bookings = $db->query("SELECT COUNT(*) FROM bookings WHERE user_id = " . $_SESSION['user_id'])->fetchColumn();
 $active_bookings = $db->query("SELECT COUNT(*) FROM bookings WHERE user_id = " . $_SESSION['user_id'] . " AND status = 'active'")->fetchColumn();
 
 // 최근 예약 내역
 $recent_bookings = $db->prepare("
-    SELECT b.*, s.name as station_name, s.address 
+    SELECT b.*, s.csNm as station_name, s.addr as address, s.cpNm as charger_name 
     FROM bookings b 
-    JOIN charging_stations s ON b.station_id = s.id 
+    JOIN eg_charging_stations s ON b.station_offer_cd = s.offer_cd 
+        AND b.station_csId = s.csId AND b.station_cpId = s.cpId
     WHERE b.user_id = ? 
     ORDER BY b.created_at DESC 
     LIMIT 5
@@ -73,6 +74,7 @@ $recent_bookings->execute([$_SESSION['user_id']]);
                       <div class="booking-info">
                         <h4><?php echo htmlspecialchars($booking['station_name']); ?></h4>
                         <p><?php echo htmlspecialchars($booking['address']); ?></p>
+                        <small class="charger-info">충전기: <?php echo htmlspecialchars($booking['charger_name']); ?></small>
                         <span class="booking-date"><?php echo date('Y-m-d H:i', strtotime($booking['start_time'])); ?></span>
                       </div>
                       <div class="booking-status">

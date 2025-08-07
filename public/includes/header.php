@@ -7,6 +7,35 @@ if (session_status() == PHP_SESSION_NONE) {
 // 현재 페이지 확인을 위한 경로 설정
 $current_page = basename($_SERVER['PHP_SELF']);
 $base_path = (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) ? '../' : '';
+
+include_once $base_path . '../config/database.php';
+// 방문로그 추적
+include_once $base_path . 'includes/VisitLogger.php';
+
+try {
+    $database = new Database();
+    $db = $database->getConnection();
+    $visitLogger = new VisitLogger($db);
+
+    // 현재 사용자 ID (로그인된 경우)
+    $currentUserId = $_SESSION['user_id'] ?? null;
+
+    // 페이지 제목 설정
+    $currentPageTitle = $page_title ?? 'EGCharge';
+
+    // 방문로그 기록
+    $logId = $visitLogger->log($currentUserId, $currentPageTitle);
+
+    // JavaScript로 로그 ID 전달 (페이지 이탈 시 체류시간 업데이트용)
+    if ($logId) {
+        echo "<script>window.visitLogId = {$logId};</script>";
+    }
+
+} catch(Exception $e) {
+    // 로그 기록 실패 시에도 페이지는 정상 표시
+    error_log("방문로그 기록 실패: " . $e->getMessage());
+}
+
 ?>
   <!DOCTYPE html>
   <html lang="ko">
@@ -54,7 +83,12 @@ $base_path = (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) ? '../' : '';
                    class="<?php echo ($current_page == 'bookings.php') ? 'active' : ''; ?>">
                 예약 관리
               </a></li>
-
+            <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
+              <li><a href="<?php echo $base_path; ?>pages/analytics.php"
+                     class="<?php echo ($current_page == 'analytics.php') ? 'active' : ''; ?>">
+                  방문통계
+                </a></li>
+            <?php endif; ?>
             <li class="user-menu">
               <a href="#" class="user-toggle">
                 <span class="user-icon">👤</span>

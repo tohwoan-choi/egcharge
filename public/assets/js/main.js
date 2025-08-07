@@ -298,3 +298,51 @@ function hideLoading(element) {
     if (loading) loading.remove();
   }
 }
+
+// 기존 main.js 코드에 추가
+
+// 페이지 체류시간 추적
+let pageStartTime = Date.now();
+let visitLogId = window.visitLogId || null;
+
+// 페이지 이탈 시 체류시간 업데이트
+window.addEventListener('beforeunload', function() {
+  if (visitLogId) {
+    const duration = Math.round((Date.now() - pageStartTime) / 1000);
+
+    // 체류시간 서버로 전송 (sendBeacon 사용)
+    const data = JSON.stringify({
+      log_id: visitLogId,
+      duration: duration
+    });
+
+    navigator.sendBeacon('../api/update-visit-duration.php', data);
+  }
+});
+
+// 페이지 가시성 API로 정확한 체류시간 측정
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden') {
+    // 페이지가 숨겨질 때
+    if (visitLogId) {
+      const duration = Math.round((Date.now() - pageStartTime) / 1000);
+
+      fetch('../api/update-visit-duration.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          log_id: visitLogId,
+          duration: duration
+        }),
+        keepalive: true
+      }).catch(() => {
+        // 실패해도 무시
+      });
+    }
+  } else if (document.visibilityState === 'visible') {
+    // 페이지가 다시 보일 때 시작시간 리셋
+    pageStartTime = Date.now();
+  }
+});

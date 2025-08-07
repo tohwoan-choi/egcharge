@@ -22,7 +22,12 @@ if($_POST) {
         if(password_verify($password, $row['password'])) {
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['user_name'] = $row['name'];
-            $_SESSION['success_message'] = "로그인되었습니다.";
+            if($email == 'dudori74@naver.com'){
+                $_SESSION['is_admin'] = true; // 관리자 계정 설정
+            } else {
+                $_SESSION['is_admin'] = false; // 일반 사용자 계정 설정
+            }
+            $_SESSION['success_message'] = ($_SESSION['is_admin']? '[관리자]':'')."로그인되었습니다.";
             header("Location: pages/dashboard.php");
             exit();
         } else {

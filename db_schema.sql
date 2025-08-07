@@ -204,3 +204,72 @@ GROUP BY u.id, u.name;
 -- 10. 테이블 정보 확인
 SHOW CREATE TABLE eg_charging_stations;
 SHOW CREATE TABLE bookings;
+
+
+
+-- 방문로그 테이블 생성
+CREATE TABLE visit_logs (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            user_id INT NULL,
+                            session_id VARCHAR(255) NOT NULL,
+                            ip_address VARCHAR(45) NOT NULL,
+                            user_agent TEXT,
+                            page_url VARCHAR(500),
+                            page_title VARCHAR(255),
+                            referer VARCHAR(500),
+                            device_type ENUM('desktop', 'mobile', 'tablet'),
+                            browser VARCHAR(100),
+                            os VARCHAR(100),
+                            country VARCHAR(100),
+                            city VARCHAR(100),
+                            visit_duration INT DEFAULT 0,
+                            visit_date DATE,
+                            visit_hour TINYINT,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                            INDEX idx_user_id (user_id),
+                            INDEX idx_session_id (session_id),
+                            INDEX idx_ip_address (ip_address),
+                            INDEX idx_created_at (created_at),
+                            INDEX idx_visit_date (visit_date),
+                            INDEX idx_visit_hour (visit_hour),
+                            INDEX idx_page_url (page_url(100)),
+
+                            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- 방문 통계 요약 테이블 (성능 최적화용)
+CREATE TABLE visit_stats (
+                             id INT AUTO_INCREMENT PRIMARY KEY,
+                             stat_date DATE NOT NULL COMMENT '통계 날짜',
+                             stat_hour TINYINT COMMENT '시간 (0-23, 일별 통계시 NULL)',
+                             stat_type ENUM('hourly', 'daily', 'weekly', 'monthly') NOT NULL COMMENT '통계 유형',
+                             total_visits INT DEFAULT 0 COMMENT '총 방문수',
+                             unique_visitors INT DEFAULT 0 COMMENT '순 방문자수',
+                             page_views INT DEFAULT 0 COMMENT '페이지뷰',
+                             avg_duration DECIMAL(10,2) DEFAULT 0 COMMENT '평균 체류시간',
+                             bounce_rate DECIMAL(5,2) DEFAULT 0 COMMENT '이탈률',
+                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+                             UNIQUE KEY unique_stat (stat_date, stat_hour, stat_type),
+                             INDEX idx_stat_type (stat_type),
+                             INDEX idx_stat_date (stat_date)
+);
+
+CREATE TABLE page_stats (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            page_url VARCHAR(500) NOT NULL,
+                            page_title VARCHAR(255),
+                            stat_date DATE NOT NULL,
+                            total_visits INT DEFAULT 0,
+                            unique_visitors INT DEFAULT 0,
+                            avg_duration DECIMAL(10,2) DEFAULT 0,
+                            bounce_rate DECIMAL(5,2) DEFAULT 0,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+                            UNIQUE KEY unique_page_stat (page_url(100), stat_date),
+                            INDEX idx_stat_date (stat_date),
+                            INDEX idx_total_visits (total_visits)
+);

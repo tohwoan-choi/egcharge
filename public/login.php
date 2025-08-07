@@ -1,9 +1,6 @@
 <?php
-
-use config\Database;
-
 session_start();
-include_once 'config/database.php';
+include_once '../config/database.php';
 include_once 'includes/header.php';
 
 $message = '';
@@ -25,7 +22,9 @@ if($_POST) {
         if(password_verify($password, $row['password'])) {
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['user_name'] = $row['name'];
+            $_SESSION['success_message'] = "로그인되었습니다.";
             header("Location: pages/dashboard.php");
+            exit();
         } else {
             $message = "비밀번호가 올바르지 않습니다.";
         }
@@ -35,32 +34,32 @@ if($_POST) {
 }
 ?>
 
-    <main class="auth-page">
-        <div class="container">
-            <div class="auth-form">
-                <h2>로그인</h2>
+  <main class="auth-page">
+    <div class="container">
+      <div class="auth-form">
+        <h2>로그인</h2>
 
-                <?php if($message): ?>
-                    <div class="alert alert-error"><?php echo $message; ?></div>
-                <?php endif; ?>
+          <?php if($message): ?>
+            <div class="alert alert-error"><?php echo $message; ?></div>
+          <?php endif; ?>
 
-                <form method="post">
-                    <div class="form-group">
-                        <label for="email">이메일</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
+        <form method="post">
+          <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" required>
+          </div>
 
-                    <div class="form-group">
-                        <label for="password">비밀번호</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
+          <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required>
+          </div>
 
-                    <button type="submit" class="btn btn-primary">로그인</button>
-                </form>
+          <button type="submit" class="btn btn-primary btn-full">로그인</button>
+        </form>
 
-                <p><a href="register.php">회원가입</a></p>
-            </div>
-        </div>
-    </main>
+        <p class="auth-link">계정이 없으신가요? <a href="register.php">회원가입</a></p>
+      </div>
+    </div>
+  </main>
 
 <?php include_once 'includes/footer.php'; ?>

@@ -1,0 +1,28 @@
+
+
+git clone git@github.com:tohwoan-choi/egcharge.git
+
+sudo nano /etc/nginx/sites-available/default
+
+# HTTP 설정 (egcharge.com 추가)
+server {
+    listen 80;
+    server_name egcharge.com www.egcharge.com;
+
+    root /var/www/egcharge/public;
+    index index.php index.html;
+
+    access_log /var/log/nginx/egcharge_access.log;
+    error_log /var/log/nginx/egcharge_error.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}

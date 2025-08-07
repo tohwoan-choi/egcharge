@@ -13,10 +13,19 @@ $base_path = (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) ? '../' : '';
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Electric Vehicle Charging Station Management System">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="EGCharge - 전기차 충전소 관리">
+    <meta property="og:description" content="Electric Vehicle Charging Station Management System">
+    <meta property="og:image" content="https://egcharge.com/assets/img/apple-touch-icon.png">
+    <meta property="og:url" content="https://egcharge.com">
     <title><?php echo isset($page_title) ? $page_title . ' - EGCharge' : 'EGCharge - 전기차 충전소 관리'; ?></title>
     <meta name="description" content="전기차 충전소 예약 및 관리 시스템">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/style.css">
-    <link rel="icon" type="image/x-icon" href="<?php echo $base_path; ?>assets/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
   </head>
 <body>
   <header>

@@ -1,0 +1,12 @@
+config/db.php
+# IntelliJ / PhpStorm
+.idea/
+*.iml
+
+# OS 관련
+.DS_Store
+
+# PHP 관련
+vendor/
+.env
+*.log

@@ -1,5 +1,5 @@
 config/db.php
-config/datab.php
+config/database.php
 # IntelliJ / PhpStorm
 .idea/
 *.iml

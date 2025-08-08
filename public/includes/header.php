@@ -84,6 +84,10 @@ try {
                 예약 관리
               </a></li>
             <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
+              <li><a href="<?php echo $base_path; ?>pages/visit-logs.php"
+                     class="<?php echo ($current_page == 'visit-logs.php') ? 'active' : ''; ?>">
+                  방문로그
+                </a></li>
               <li><a href="<?php echo $base_path; ?>pages/analytics.php"
                      class="<?php echo ($current_page == 'analytics.php') ? 'active' : ''; ?>">
                   방문통계

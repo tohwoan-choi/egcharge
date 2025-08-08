@@ -15,19 +15,39 @@ class InfoCollector
 
     // 충전기 상태 코드 매핑
     private $chargeStatusMap = [
+        '0' => '상태확인불가',
         '1' => '충전가능',
         '2' => '충전중',
         '3' => '고장/점검',
         '4' => '통신장애',
-        '5' => '통신미연결',
-        '9' => '운영중지'
+        '9' => '충전예약'
     ];
 
+// cpStat 7, 11,91,92 번 확인 필요
+
     // 커넥터 타입 코드 매핑
+//1 : B타입(5핀)
+//2 : C타입(5핀)
+//3 : BC타입(5핀)
+//4 : BC타입(7핀)
+//5 : DC차데모
+//6 : AC3상
+//7 : DC콤보
+//8 : DC차데모+DC콤보
+//9 : DC차데모+AC3상
+//10 : DC차데모+DC콤보+AC3상
+
     private $connectorTypeMap = [
-        '03' => 'AC완속',
-        '07' => 'DC차데모',
-        '10' => 'DC콤보'
+        '1' => 'B타입(5핀)',
+        '2' => 'C타입(5핀)',
+        '3' => 'BC타입(5핀)',
+        '4' => 'BC타입(7핀)',
+        '5' => 'DC차데모',
+        '6' => 'AC3상',
+        '7' => 'DC콤보',
+        '8' => 'DC차데모+DC콤보',
+        '9' => 'DC차데모+AC3상',
+        '10' => 'DC차데모+DC콤보+AC3상'
     ];
 
     public function __construct($pdo, $EXTERNALAPIURL = '', $XAPIKEY = '')
@@ -234,12 +254,12 @@ class InfoCollector
                         (float)($item['longi'] ?? 0),                     // lngi (longi로 수정)
                         (string)($item['cpId'] ?? ''),                    // cpId
                         $chargeTp,                                        // charegTp
-                        $this->chargeTypeMap[$chargeTp] ?? null,          // charegTpNm
+                        $this->chargeTypeMap[$chargeTp] ?? 'Unknown',          // charegTpNm
                         (string)($item['cpNm'] ?? ''),                    // cpNm
                         $cpStat,                                          // cpStat
-                        $this->chargeStatusMap[$cpStat] ?? null,          // cpStatNm
+                        $this->chargeStatusMap[$cpStat] ?? 'Unknown',          // cpStatNm
                         (int)$cpTp,                                       // cpTp
-                        $this->connectorTypeMap[$cpTp] ?? null,           // cpTpNm
+                        $this->connectorTypeMap[(int)$cpTp] ?? 'Unknown',           // cpTpNm
                         (string)($item['statUpdateDatetime'] ?? '')       // statUpdatetime
                     );
 

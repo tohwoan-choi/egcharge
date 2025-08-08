@@ -1,0 +1,2 @@
+### 어제날짜 방문자 통계
+10 * * * * /usr/bin/php /var/www/egcharge/public/script/generate-daily-stats.php >> /var/log/egcharge/daily_stats_generate.log 2>&1

@@ -1,7 +1,7 @@
 <?php
 // CLI 환경에서 실행되는 스크립트
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/VisitLogger.php';
+require_once __DIR__ . '/../public/includes/VisitLogger.php';
 
 try {
     $database = new Database();
@@ -13,6 +13,8 @@ try {
     // 어제 통계 생성
     $visitLogger->generateHourlyStats($yesterday);
     $visitLogger->generateDailyStats($yesterday);
+    $visitLogger->generateWeeklyStats($yesterday);
+    $visitLogger->generateMonthlyStats($yesterday);
 
     echo "Daily stats generated for {$yesterday}\n";
 

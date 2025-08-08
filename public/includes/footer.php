@@ -1,6 +1,12 @@
 <?php
 // 현재 페이지 확인을 위한 경로 설정
 $base_path = (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) ? '../' : '';
+
+$jsPath = __DIR__ . '/../assets/css/main.js';
+$jsFileName = basename($jsPath);
+$jsVersion = file_exists($jsPath) ? filemtime($jsPath) : time();
+
+
 ?>
 
 <footer>
@@ -99,7 +105,7 @@ $base_path = (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) ? '../' : '';
 </footer>
 
 <!-- JavaScript 파일 로드 -->
-<script src="<?php echo $base_path; ?>assets/js/main.js"></script>
+<script src="<?php echo $base_path; ?>assets/js/<?=$jsFileName?>?v=<?=$jsVersion?>"></script>
 
 <script>
   // 맨 위로 버튼 기능

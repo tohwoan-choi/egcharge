@@ -36,6 +36,9 @@ try {
     error_log("방문로그 기록 실패: " . $e->getMessage());
 }
 
+$cssPath = __DIR__ . '/../assets/css/style.css';
+$cssFileName = basename($cssPath);
+$cssVersion = file_exists($cssPath) ? filemtime($cssPath) : time();
 ?>
   <!DOCTYPE html>
   <html lang="ko">
@@ -50,7 +53,7 @@ try {
     <meta property="og:url" content="https://egcharge.com">
     <title><?php echo isset($page_title) ? $page_title . ' - EGCharge' : 'EGCharge - 전기차 충전소 관리'; ?></title>
     <meta name="description" content="전기차 충전소 예약 및 관리 시스템">
-    <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/<?=$cssFileName?>?v=<?=$cssVersion?>">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon-16x16.png">

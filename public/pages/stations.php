@@ -14,7 +14,7 @@ include_once '../includes/header.php';
       <div class="search-section">
         <div class="search-form">
           <input type="text" id="station-search" placeholder="충전소명 또는 주소로 검색" class="search-input">
-          <button type="button" class="btn btn-primary" onclick="searchStations()">검색</button>
+          <button type="button" class="btn btn-primary" onclick="searchStationBtn()">검색</button>
         </div>
 
         <div class="filters">
@@ -267,13 +267,16 @@ include_once '../includes/header.php';
       background-color: rgba(0,0,0,0.5);
     }
 
+    /* 수정된 코드 */
     .modal-content {
       background-color: white;
-      margin: 15% auto;
+      margin: 5% auto;
       padding: 0;
       border-radius: 10px;
       width: 90%;
       max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .modal-header {
@@ -350,6 +353,16 @@ include_once '../includes/header.php';
 
       .detail-tags {
         flex-direction: column;
+      }
+
+      .modal-content {
+        margin: 2% auto;
+        width: 95%;
+        max-height: 95vh;
+      }
+
+      .modal-body {
+        padding: 1rem;
       }
     }
   </style>

@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+function searchStationBtn() {
+  filterStations(); // 기존 filterStations 함수 호출
+}
 // 충전소 검색 함수
 function searchStations(query) {
   const loadingElement = document.getElementById('search-loading');

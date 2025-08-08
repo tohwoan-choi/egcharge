@@ -70,7 +70,9 @@ git clone git@github.com:tohwoan-choi/egcharge.git
 
             }
 
-            # SSL 인증서 파일 경로
+            # 충전기 정보 kepco 오픈 API
+            # 공공 데이터 포털
+            # https://www.data.go.kr/index.do
 
             curl --include --request GET 'http://openapi.kepco.co.kr/service/EvInfoServiceV2/getEvSearchList?serviceKey=YD4F7fM0S3trjigSjUMpEtEU1kD6deSc3zED0kM4zEvOGjw6QhxIX6%2FmAJLY2esmuQOrf%2BPf2GmGaLLcBy5BvQ%3D%3D&pageNo=1&numOfRows=10'
             curl --include --request GET 'http://openapi.kepco.co.kr/service/EvInfoServiceV2/getEvSearchList?serviceKey=YD4F7fM0S3trjigSjUMpEtEU1kD6deSc3zED0kM4zEvOGjw6QhxIX6/mAJLY2esmuQOrf+Pf2GmGaLLcBy5BvQ==&pageNo=1&numOfRows=10'

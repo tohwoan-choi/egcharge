@@ -240,6 +240,7 @@ CREATE TABLE visit_logs (
 
 -- 방문 통계 요약 테이블 (성능 최적화용)
 DROP TABLE IF EXISTS visit_stats;
+
 CREATE TABLE visit_stats (
                              id INT AUTO_INCREMENT PRIMARY KEY,
                              stat_date DATE NOT NULL COMMENT '통계 날짜',
@@ -253,18 +254,12 @@ CREATE TABLE visit_stats (
                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    -- 수정된 UNIQUE KEY: stat_type을 먼저, 조건부 stat_hour
-                             UNIQUE KEY unique_hourly_stat (stat_type, stat_date, stat_hour),
-                             UNIQUE KEY unique_non_hourly_stat (stat_type, stat_date),
+    -- 하나의 UNIQUE KEY로 통합 (stat_hour가 NULL 허용)
+                             UNIQUE KEY unique_stat (stat_type, stat_date, stat_hour),
 
                              INDEX idx_stat_type (stat_type),
                              INDEX idx_stat_date (stat_date),
-
-    -- CHECK 제약조건 추가 (MySQL 8.0.16+)
-                             CONSTRAINT chk_hourly_stat CHECK (
-                                 (stat_type = 'hourly' AND stat_hour IS NOT NULL AND stat_hour BETWEEN 0 AND 23) OR
-                                 (stat_type != 'hourly' AND stat_hour IS NULL)
-                                 )
+                             INDEX idx_stat_type_date (stat_type, stat_date)
 );
 
 CREATE TABLE page_stats (

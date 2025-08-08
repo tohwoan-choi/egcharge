@@ -278,3 +278,15 @@ CREATE TABLE page_stats (
                             INDEX idx_stat_date (stat_date),
                             INDEX idx_total_visits (total_visits)
 );
+
+
+drop table egcharge_agent_job;
+CREATE TABLE IF NOT EXISTS egcharge_agent_job (
+                                                 id INT AUTO_INCREMENT PRIMARY KEY,
+                                                 agent_id VARCHAR(200) NOT NULL,
+    agent_ip VARCHAR(100) NOT NULL,
+    job VARCHAR(200),
+    job_execute_time DATETIME,
+    job_status VARCHAR(100),
+    job_message VARCHAR(200)
+    );

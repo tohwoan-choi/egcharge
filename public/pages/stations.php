@@ -180,7 +180,14 @@ include_once '../includes/header.php';
       font-size: 0.9rem;
       margin-bottom: 1rem;
     }
-
+    .update-time {
+      margin: 0;
+      padding: 2px 0;
+      font-size: 0.75em;
+      color: #999;
+      opacity: 0.7;
+      text-align: right;
+    }
     .charger-details {
       background: #f8f9fa;
       padding: 1rem;
@@ -423,6 +430,7 @@ include_once '../includes/header.php';
             addr: station.addr,
             lat: station.lat,
             lngi: station.lngi,
+            statupdatetime: station.statUpdatetime,
             chargers: []
           };
         }
@@ -480,6 +488,9 @@ include_once '../includes/header.php';
                         고장: ${brokenChargers.length}
                     </small>
                 </div>
+            </div>
+            <div>
+              <p class="update-time">update:${escapeHtml(stationGroup.statupdatetime)}</p>
             </div>
             <div class="chargers-list">
                 ${chargersHtml}

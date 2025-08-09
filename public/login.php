@@ -27,6 +27,10 @@ if($_POST) {
             } else {
                 $_SESSION['is_admin'] = false; // 일반 사용자 계정 설정
             }
+            $updateQuery = "UPDATE users SET last_login_at = NOW() WHERE id = ?";
+            $updateStmt = $db->prepare($updateQuery);
+            $updateStmt->bindParam(1, $row['id']);
+            $updateStmt->execute();
             $_SESSION['success_message'] = ($_SESSION['is_admin']? '[관리자]':'')."로그인되었습니다.";
             header("Location: pages/dashboard.php");
             exit();

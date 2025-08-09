@@ -32,9 +32,11 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
+    last_login_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
+ALTER TABLE users ADD COLUMN last_login_at TIMESTAMP NULL;
 
 -- 3. 새로운 충전소 테이블 생성 (KEPCO 표준)
 CREATE TABLE eg_charging_stations (

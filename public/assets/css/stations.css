@@ -237,6 +237,11 @@
   color: #666;
 }
 
+.review-ip {
+  font-size: 0.75rem;
+  color: #666;
+}
+
 .review-content {
   font-size: 0.9rem;
   color: #333;
@@ -246,6 +251,8 @@
 
 .review-actions {
   display: flex;
+  justify-content: space-between;  /* 기존: flex-end */
+  align-items: center;             /* 추가 */
   gap: 0.5rem;
 }
 

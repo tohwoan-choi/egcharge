@@ -203,6 +203,7 @@ function appendReviews(reviews) {
 function createReviewHTML(review) {
   const isMyReview = review.is_my_review || false;
   const reviewClass = isMyReview ? 'review-item my-review' : 'review-item';
+  const ipAddress = review.ip_address || '알 수 없음';
   const deleteButton = isMyReview ?
                        `<button class="delete-review-btn" onclick="deleteReview(${review.id})">삭제</button>` : '';
 
@@ -221,7 +222,10 @@ function createReviewHTML(review) {
         <span class="review-date">${reviewDate}</span>
       </div>
       <div class="review-content">${escapeHtml(review.content)}</div>
+      <div class="review-actions">
       ${deleteButton ? `<div class="review-actions">${deleteButton}</div>` : ''}
+        <div class="review-ip">${ipAddress}</div>
+      </div>
     </div>
   `;
 }

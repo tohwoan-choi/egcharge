@@ -14,6 +14,20 @@ $db = $database->getConnection();
 $user_id = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
+$client_ip = '0.0.0.0';
+
+$ipKeys = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
+foreach ($ipKeys as $key) {
+    if (!empty($_SERVER[$key])) {
+        $ip = $_SERVER[$key];
+        if (strpos($ip, ',') !== false) {
+            $ip = explode(',', $ip)[0];
+        }
+        $client_ip = trim($ip);
+        break;
+    }
+}
+
 if ($method === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     $station_id = $input['station_id'] ?? '';
@@ -41,8 +55,8 @@ if ($method === 'POST') {
         }
 
         // 한줄평 저장
-        $stmt = $db->prepare("INSERT INTO station_reviews (user_id, station_id, content, created_at) VALUES (?, ?, ?, NOW())");
-        $stmt->execute([$user_id, $station_id, $content]);
+        $stmt = $db->prepare("INSERT INTO station_reviews (user_id, station_id, content,ip_address, created_at) VALUES (?, ?, ?, ?, NOW())");
+        $stmt->execute([$user_id, $station_id, $content, $client_ip]);
 
         echo json_encode(['success' => true, 'message' => '한줄평이 등록되었습니다.']);
 
@@ -66,7 +80,7 @@ if ($method === 'POST') {
 
         // 한줄평 목록 조회 (본인 글 표시를 위해 user_id 확인)
         $stmt = $db->prepare("
-            SELECT sr.id, sr.content, sr.created_at, u.name,
+            SELECT sr.id, sr.content, CONCAT(SUBSTRING_INDEX(sr.ip_address, '.', 2), '.***.***') AS ip_address,  sr.created_at, u.name,
                    CASE WHEN sr.user_id = ? THEN 1 ELSE 0 END as is_my_review
             FROM station_reviews sr 
             JOIN users u ON sr.user_id = u.id 

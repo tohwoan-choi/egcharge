@@ -4,6 +4,9 @@ session_start();
 
 include_once '../../config/database.php';
 
+echo json_encode(['success' => false, 'message' => '준비중입니다.'], JSON_UNESCAPED_UNICODE);
+exit();
+
 if(!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => '로그인이 필요합니다.'], JSON_UNESCAPED_UNICODE);
     exit();

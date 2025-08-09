@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+echo "<script>alert('준비중입니다.'); window.location.href = '/';</script>";
+exit();
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit();

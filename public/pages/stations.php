@@ -241,6 +241,11 @@ function getStatusClass($status) {
             </div>
           <?php else: ?>
             <div class="login-required">
+              <form id="review-form">
+                <input type="hidden" id="review-station-id" name="station_id">
+                <input type="hidden" id="review-content" name="content" maxlength="100">
+                <div class="char-count" style="display: none">0/100</div>
+              </form>
               <p>한줄평 작성을 위해 로그인이 필요합니다.</p>
               <a href="../login.php" class="btn btn-primary">로그인</a>
             </div>

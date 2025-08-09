@@ -123,11 +123,11 @@ function toggleDislike(stationId) {
 
 // 한줄평 모달 표시
 function showReviewModal(stationId, stationName) {
-  if (!isLoggedIn()) {
-    alert('로그인이 필요합니다.');
-    window.location.href = '../login.php';
-    return;
-  }
+  // if (!isLoggedIn()) {
+  //   alert('로그인이 필요합니다.');
+  //   window.location.href = '../login.php';
+  //   return;
+  // }
 
   document.getElementById('review-station-id').value = stationId;
   document.getElementById('selected-station-name').textContent = stationName;

@@ -4,14 +4,14 @@ session_start();
 header('Content-Type: application/json');
 require_once '../../config/database.php';
 
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['success' => false, 'message' => '로그인이 필요합니다.']);
-    exit;
-}
+//if (!isset($_SESSION['user_id'])) {
+//    echo json_encode(['success' => false, 'message' => '로그인이 필요합니다.']);
+//    exit;
+//}
 $database = new Database();
 $db = $database->getConnection();
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'] ?? '_dummy'.bin2hex(random_bytes(16));
 $method = $_SERVER['REQUEST_METHOD'];
 
 $client_ip = '0.0.0.0';

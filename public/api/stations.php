@@ -1,6 +1,9 @@
 <?php
 header('Content-Type: application/json');
-session_start();
+// 세션이 시작되지 않았다면 시작
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 include_once '../../config/database.php';
 

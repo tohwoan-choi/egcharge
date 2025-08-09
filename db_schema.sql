@@ -290,3 +290,40 @@ CREATE TABLE IF NOT EXISTS egcharge_agent_job (
     job_status VARCHAR(100),
     job_message VARCHAR(200)
     );
+
+
+-- 충전소 반응(좋아요/싫어요) 테이블
+CREATE TABLE station_reactions (
+                                   id INT AUTO_INCREMENT PRIMARY KEY,
+                                   user_id INT NOT NULL,
+                                   station_id VARCHAR(50) NOT NULL,
+                                   reaction_type ENUM('like', 'dislike') NOT NULL,
+                                   created_at DATETIME NOT NULL,
+                                   UNIQUE KEY unique_user_station (user_id, station_id),
+                                   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                                   INDEX idx_station_id (station_id),
+                                   INDEX idx_created_at (created_at)
+);
+
+-- 충전소 한줄평 테이블
+CREATE TABLE station_reviews (
+                                 id INT AUTO_INCREMENT PRIMARY KEY,
+                                 user_id INT NOT NULL,
+                                 station_id VARCHAR(50) NOT NULL,
+                                 content TEXT NOT NULL,
+                                 created_at DATETIME NOT NULL,
+                                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                                 INDEX idx_station_id (station_id),
+                                 INDEX idx_created_at (created_at),
+                                 INDEX idx_user_station_date (user_id, station_id, created_at)
+);
+
+-- 충전소별 통계를 위한 뷰 (선택사항)
+CREATE VIEW station_stats AS
+SELECT
+    station_id,
+    SUM(CASE WHEN reaction_type = 'like' THEN 1 ELSE 0 END) as likes,
+    SUM(CASE WHEN reaction_type = 'dislike' THEN 1 ELSE 0 END) as dislikes,
+    (SELECT COUNT(*) FROM station_reviews WHERE station_reviews.station_id = station_reactions.station_id) as reviews_count
+FROM station_reactions
+GROUP BY station_id;

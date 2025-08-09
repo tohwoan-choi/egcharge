@@ -80,7 +80,12 @@ if ($method === 'POST') {
 
         // 한줄평 목록 조회 (본인 글 표시를 위해 user_id 확인)
         $stmt = $db->prepare("
-            SELECT sr.id, sr.content, CONCAT(SUBSTRING_INDEX(sr.ip_address, '.', 1), '.***.***.', SUBSTRING_INDEX(sr.ip_address, '.', -1)) AS ip_address,  sr.created_at, CONCAT(LEFT(u.name, 2), REPEAT('*', GREATEST(0, 5 - CHAR_LENGTH(u.name)))) AS name,
+            SELECT sr.id, sr.content, 
+                   CONCAT(SUBSTRING_INDEX(sr.ip_address, '.', 1), '.***.***.', SUBSTRING_INDEX(sr.ip_address, '.', -1)) AS ip_address,  sr.created_at, 
+                   CONCAT(
+                        LEFT(u.name, 2),
+                        REPEAT('*', 5 - CHAR_LENGTH(LEFT(u.name, 2)))
+                    ) AS name,
                    CASE WHEN sr.user_id = ? THEN 1 ELSE 0 END as is_my_review
             FROM station_reviews sr 
             JOIN users u ON sr.user_id = u.id 

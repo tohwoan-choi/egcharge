@@ -251,14 +251,14 @@
 
 .review-actions {
   display: flex;
-  justify-content: space-between;  /* 기존: flex-end */
+  justify-content: flex-end;
   align-items: center;             /* 추가 */
   gap: 0.5rem;
 }
 
 .delete-review-btn {
   background: none;
-  border: none;
+  border: 1px solid #dc3545;
   color: #dc3545;
   font-size: 0.8rem;
   cursor: pointer;

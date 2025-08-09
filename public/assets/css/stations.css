@@ -4,37 +4,96 @@
 }
 
 .search-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 100; /* 가장 높은 우선순위 */
 }
 
 .search-form {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* 검색 입력 그룹 */
+.search-input-group {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
 }
 
 .search-input {
   flex: 1;
-  padding: 12px;
-  border: 2px solid #e9ecef;
-  border-radius: 5px;
-  font-size: 1rem;
+  padding: 0.5rem; /* 0.75rem → 0.5rem */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem; /* 1rem → 0.9rem */
+  height: 40px; /* 48px → 40px */
 }
 
+.search-input-group .btn {
+  white-space: nowrap;
+  min-width: 60px; /* 80px → 60px */
+  height: 40px; /* 48px → 40px */
+  padding: 0 0.75rem; /* 패딩 조정 */
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 필터 영역 */
 .filters {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1rem 0; /* 좌우 패딩 제거 */
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding-left: 0; /* 왼쪽 패딩 완전 제거 */
+  padding-right: 1rem; /* 오른쪽 패딩만 유지 */
+  position: relative; /* 드롭다운 위치 기준점 */
+  z-index: 1; /* 기본 z-index */
 }
 
 .filters select {
-  padding: 8px 12px;
+  padding: 0.5rem;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 4px;
+  min-width: 120px;
+  position: relative;
+  z-index: 10; /* 드롭다운이 다른 요소보다 위에 표시 */
+}
+
+.filters .btn {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 3rem 0;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.loading-message p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.loading-message p::before {
+  content: '⏳';
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .stations-grid {
@@ -184,7 +243,7 @@
   color: #7b1fa2 !important;
 }
 
-/* 한줄평 모달 추가 스타일 */
+/* 한줄평 모달 스타일 */
 .reviews-section {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
@@ -252,7 +311,7 @@
 .review-actions {
   display: flex;
   justify-content: flex-end;
-  align-items: center;             /* 추가 */
+  align-items: center;
   gap: 0.5rem;
 }
 
@@ -311,6 +370,7 @@
   background: #007bff;
   color: white;
 }
+
 .modal {
   display: none;
   position: fixed;
@@ -434,12 +494,23 @@
 
 /* 반응형 */
 @media (max-width: 768px) {
-  .search-form {
-    flex-direction: column;
+  .search-input-group {
+    flex-wrap: wrap;
+  }
+
+  .search-input-group .btn {
+    min-width: 60px;
   }
 
   .filters {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters select,
+  .filters .btn {
+    width: 100%;
+    margin-left: 0;
   }
 
   .stations-grid {

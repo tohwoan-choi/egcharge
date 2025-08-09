@@ -218,7 +218,7 @@ function createReviewHTML(review) {
   return `
     <div class="${reviewClass}" data-review-id="${review.id}">
       <div class="review-header">
-        <span class="review-author">${escapeHtml(review.username)}</span>
+        <span class="review-author">${escapeHtml(review.name)}</span>
         <span class="review-date">${reviewDate}</span>
       </div>
       <div class="review-content">${escapeHtml(review.content)}</div>
